@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-Hans">
+    <head>
+        <title>LED符号生成器</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            :root {
+                --bg: #eef2f7;
+                --card: #ffffff;
+                --text: #1f2937;
+                --muted: #6b7280;
+                --line: #d6dde8;
+                --primary: #0f766e;
+                --primary-hover: #0b5d57;
+                --danger: #b91c1c;
+            }
+            html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+            body { padding: 16px; }
+            .card {
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 16px;
+                box-shadow: 0 6px 16px rgba(13, 36, 61, 0.08);
+            }
+            .title {
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+            .sub {
+                color: var(--muted);
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+            .row {
+                display: grid;
+                grid-template-columns: 80px 1fr;
+                gap: 8px;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            label {
+                font-weight: 600;
+                font-size: 12px;
+            }
+            input {
+                width: 100%;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 8px 10px;
+                font: inherit;
+                outline: none;
+                background: #fff;
+                color: var(--text);
+                box-sizing: border-box;
+            }
+            input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+            }
+            .readonly-value {
+                min-height: 18px;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                background: #f5f7fa;
+                font-size: 12px;
+                color: var(--muted);
+                word-break: break-all;
+            }
+            .chip-list {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                margin-bottom: 10px;
+            }
+            .chip-header {
+                display: grid;
+                grid-template-columns: 30px 70px 52px 68px 68px 40px;
+                gap: 4px;
+                padding: 8px;
+                background: #f5f7fa;
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--muted);
+                border-bottom: 1px solid var(--line);
+            }
+            .chip-row {
+                display: grid;
+                grid-template-columns: 30px 70px 52px 68px 68px 40px;
+                gap: 4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid var(--line);
+                align-items: center;
+            }
+            .chip-row:last-child {
+                border-bottom: none;
+            }
+            .chip-row input {
+                padding: 4px 6px;
+                font-size: 12px;
+            }
+            .color-preview {
+                width: 50px;
+                height: 24px;
+                border-radius: 4px;
+                border: 1px solid var(--line);
+            }
+            .btn-icon {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: var(--danger);
+                font-size: 16px;
+                padding: 4px;
+            }
+            .btn-icon:hover {
+                color: #991b1b;
+            }
+            .btn-add {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 8px;
+                background: #f5f7fa;
+                border: 1px dashed var(--line);
+                border-radius: 8px;
+                cursor: pointer;
+                color: var(--primary);
+                font-weight: 600;
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+            .btn-add:hover {
+                background: #e9edf3;
+                border-color: var(--primary);
+            }
+            .common-terminal {
+                padding: 10px;
+                background: #f5f7fa;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            .common-terminal label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 6px;
+                font-size: 12px;
+            }
+            .common-terminal input[type="radio"] {
+                width: auto;
+            }
+            .common-terminal .pin-input {
+                margin-left: 24px;
+                margin-top: 4px;
+            }
+            .common-terminal .pin-input input {
+                width: 80px;
+            }
+            .preview-box {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 16px;
+                background: #fff;
+                min-height: 120px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 12px;
+            }
+            .preview-svg {
+                max-width: 100%;
+                max-height: 100px;
+            }
+            .error {
+                color: var(--danger);
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+            .is-hidden { display: none; }
+            .actions {
+                margin-top: 14px;
+                padding-top: 10px;
+                border-top: 1px solid var(--line);
+                display: flex;
+                justify-content: flex-end;
+                gap: 8px;
+            }
+            button {
+                border: 1px solid var(--line);
+                background: #f5f7fa;
+                color: var(--text);
+                border-radius: 8px;
+                padding: 8px 14px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+            }
+            button:hover { background: #e9edf3; }
+            button:disabled { opacity: 0.5; cursor: not-allowed; }
+            .btn-primary {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+            .btn-primary:hover { background: var(--primary-hover); }
+            .btn-primary:disabled { background: var(--primary); opacity: 0.5; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="title">创建LED符号</div>
+            <div class="sub">输入LED波长创建对应颜色的原理图符号</div>
+
+            <div id="errorBox" class="error is-hidden"></div>
+
+            <div class="row">
+                <label>符号名称</label>
+                <input id="symbolName" type="text" placeholder="自动生成或手动输入" />
+            </div>
+
+            <div class="row">
+                <label>当前文档</label>
+                <div id="activeLibrary" class="readonly-value">当前激活的符号文档</div>
+            </div>
+
+            <div class="sub" style="margin-top: 12px; margin-bottom: 6px;">LED芯片列表</div>
+
+            <div id="chipList" class="chip-list">
+                <div class="chip-header">
+                    <span>#</span>
+                    <span>波长(nm)</span>
+                    <span>颜色</span>
+                    <span>A 引脚</span>
+                    <span>K 引脚</span>
+                    <span>操作</span>
+                </div>
+                <div id="chipRows"></div>
+            </div>
+
+            <div class="btn-add" id="btnAddChip">
+                <span>+</span> 添加LED芯片
+            </div>
+
+            <div class="common-terminal">
+                <label>
+                    <input type="radio" name="commonTerminal" value="none" checked />
+                    无公共端
+                </label>
+                <label>
+                    <input type="radio" name="commonTerminal" value="commonCathode" />
+                    公共阴极
+                </label>
+                <div class="pin-input is-hidden" id="commonCathodePin">
+                    <input type="text" placeholder="引脚号 (如: 4)" id="commonCathodePinNum" />
+                </div>
+                <label>
+                    <input type="radio" name="commonTerminal" value="commonAnode" />
+                    公共阳极
+                </label>
+                <div class="pin-input is-hidden" id="commonAnodePin">
+                    <input type="text" placeholder="引脚号 (如: 4)" id="commonAnodePinNum" />
+                </div>
+            </div>
+
+            <div class="sub" style="margin-bottom: 6px;">符号预览</div>
+            <div class="preview-box">
+                <svg id="previewSvg" class="preview-svg" viewBox="-200 -200 400 300">
+                    <text x="0" y="0" text-anchor="middle" fill="#6b7280" font-size="12">添加LED芯片后显示预览</text>
+                </svg>
+            </div>
+
+            <div class="actions">
+                <button id="btnCancel">取消</button>
+                <button id="btnCreate" class="btn-primary">创建符号</button>
+            </div>
+        </div>
+
+        <script>
+            const IFRAME_LOG_PREFIX = '[LED][Iframe]';
+            let bootstrapEdaApi = null;
+            try { bootstrapEdaApi = window.parent?.eda || window.top?.eda || window.eda; } catch (e) { console.error(e); }
+
+            function bootstrapLog(message, type) {
+                try { bootstrapEdaApi?.sys_Log?.add?.(`${IFRAME_LOG_PREFIX} ${message}`, type || 1); } catch {}
+            }
+
+            bootstrapLog(`bootstrap start | readyState=${document.readyState}`);
+
+            try {
+            const edaApi = bootstrapEdaApi;
+            const TOPIC_CLOSE = 'LED_CLOSE';
+            const TOPIC_CREATE_SYMBOL = 'LED_CREATE_SYMBOL';
+            const errorBox = document.getElementById('errorBox');
+            const symbolNameInput = document.getElementById('symbolName');
+            const activeLibraryBox = document.getElementById('activeLibrary');
+            const chipRows = document.getElementById('chipRows');
+            const btnAddChip = document.getElementById('btnAddChip');
+            const btnCancel = document.getElementById('btnCancel');
+            const btnCreate = document.getElementById('btnCreate');
+            const previewSvg = document.getElementById('previewSvg');
+
+            // State
+            let ledChips = [];
+            let chipIdCounter = 0;
+
+            function logWithType(m, type) { try { if (!edaApi?.sys_Log?.add) return; edaApi.sys_Log.add(`${IFRAME_LOG_PREFIX} ${m}`, type); } catch {} }
+            const logInfo = (m) => logWithType(m, 1);
+            const logError = (m) => logWithType(m, 3);
+
+            function showError(msg) {
+                errorBox.classList.toggle('is-hidden', !msg);
+                errorBox.textContent = msg || '';
+                if (msg) logError(`showError | ${msg}`);
+            }
+
+            function pushPublic(topic, payload) {
+                const bus = edaApi?.sys_MessageBus;
+                if (!bus) throw new Error('sys_MessageBus unavailable');
+                if (typeof bus.publishPublic === 'function') {
+                    bus.publishPublic(topic, payload);
+                } else if (typeof bus.pushPublic === 'function') {
+                    bus.pushPublic(topic, payload);
+                } else {
+                    throw new Error('sys_MessageBus.publishPublic/pushPublic unavailable');
+                }
+            }
+
+            function closeDialog() {
+                try { pushPublic(TOPIC_CLOSE, {}); } catch { window.close(); }
+            }
+
+            async function updateActiveLibraryLabel() {
+                try {
+                    const currentDocument = await edaApi?.dmt_SelectControl?.getCurrentDocumentInfo?.();
+                    activeLibraryBox.textContent = currentDocument
+                        ? '当前符号编辑文档'
+                        : '未检测到当前激活的符号文档';
+                } catch (err) {
+                    logError(`update active document label failed: ${String(err)}`);
+                    activeLibraryBox.textContent = '读取当前文档失败';
+                }
+            }
+
+            // Wavelength to RGB conversion (client-side preview)
+            function wavelengthToRGB(wavelength) {
+                const wl = Math.max(380, Math.min(780, wavelength));
+                let r = 0, g = 0, b = 0;
+
+                if (wl >= 380 && wl < 440) { r = -(wl - 440) / (440 - 380); g = 0; b = 1; }
+                else if (wl >= 440 && wl < 490) { r = 0; g = (wl - 440) / (490 - 440); b = 1; }
+                else if (wl >= 490 && wl < 510) { r = 0; g = 1; b = -(wl - 510) / (510 - 490); }
+                else if (wl >= 510 && wl < 580) { r = (wl - 510) / (580 - 510); g = 1; b = 0; }
+                else if (wl >= 580 && wl < 645) { r = 1; g = -(wl - 645) / (645 - 580); b = 0; }
+                else if (wl >= 645 && wl <= 780) { r = 1; g = 0; b = 0; }
+
+                let factor = 1;
+                if (wl >= 380 && wl < 420) factor = 0.3 + (0.7 * (wl - 380)) / (420 - 380);
+                else if (wl >= 700 && wl <= 780) factor = 0.3 + (0.7 * (780 - wl)) / (780 - 700);
+
+                const gamma = 0.8;
+                const rInt = Math.round(255 * Math.pow(r * factor, gamma));
+                const gInt = Math.round(255 * Math.pow(g * factor, gamma));
+                const bInt = Math.round(255 * Math.pow(b * factor, gamma));
+
+                const toHex = (n) => Math.max(0, Math.min(255, n)).toString(16).padStart(2, '0');
+                return `#${toHex(rInt)}${toHex(gInt)}${toHex(bInt)}`.toUpperCase();
+            }
+
+            function getColorName(wavelength) {
+                const wl = Math.max(380, Math.min(780, wavelength));
+                if (wl < 450) return '紫';
+                if (wl < 495) return '蓝';
+                if (wl < 510) return '青';
+                if (wl < 570) return '绿';
+                if (wl < 590) return '黄';
+                if (wl < 620) return '橙';
+                return '红';
+            }
+
+            // Add LED chip row
+            function addChipRow(wavelength = 630, anodePinNumber = '', cathodePinNumber = '') {
+                const id = ++chipIdCounter;
+                const color = wavelengthToRGB(wavelength);
+                const colorName = getColorName(wavelength);
+
+                const row = document.createElement('div');
+                row.className = 'chip-row';
+                row.dataset.id = id;
+                row.innerHTML = `
+                    <span>${ledChips.length + 1}</span>
+                    <input type="number" min="380" max="780" value="${wavelength}" class="wavelength-input" />
+                    <div class="color-preview" style="background: ${color};" title="${colorName}"></div>
+                    <input type="text" value="${anodePinNumber}" class="anode-pin-input" placeholder="阳极" />
+                    <input type="text" value="${cathodePinNumber}" class="cathode-pin-input" placeholder="阴极" />
+                    <button class="btn-icon delete-btn" title="删除">×</button>
+                `;
+
+                chipRows.appendChild(row);
+
+                const chip = { id, wavelength, anodePinNumber, cathodePinNumber, color };
+                ledChips.push(chip);
+
+                // Event listeners
+                const wavelengthInput = row.querySelector('.wavelength-input');
+                const anodePinInput = row.querySelector('.anode-pin-input');
+                const cathodePinInput = row.querySelector('.cathode-pin-input');
+                const deleteBtn = row.querySelector('.delete-btn');
+                const colorPreview = row.querySelector('.color-preview');
+
+                wavelengthInput.addEventListener('input', () => {
+                    const wl = parseInt(wavelengthInput.value) || 630;
+                    chip.wavelength = wl;
+                    chip.color = wavelengthToRGB(wl);
+                    colorPreview.style.background = chip.color;
+                    colorPreview.title = getColorName(wl);
+                    updatePreview();
+                    updateSymbolName();
+                });
+
+                anodePinInput.addEventListener('input', () => {
+                    chip.anodePinNumber = anodePinInput.value.trim();
+                    updatePreview();
+                });
+
+                cathodePinInput.addEventListener('input', () => {
+                    chip.cathodePinNumber = cathodePinInput.value.trim();
+                    updatePreview();
+                });
+
+                deleteBtn.addEventListener('click', () => {
+                    ledChips = ledChips.filter(c => c.id !== id);
+                    row.remove();
+                    updateRowNumbers();
+                    updatePreview();
+                    updateSymbolName();
+                });
+
+                updatePreview();
+                updateSymbolName();
+            }
+
+            function updateRowNumbers() {
+                const rows = chipRows.querySelectorAll('.chip-row');
+                rows.forEach((row, index) => {
+                    row.querySelector('span').textContent = index + 1;
+                });
+            }
+
+            function updateSymbolName() {
+                if (ledChips.length === 0) {
+                    symbolNameInput.placeholder = '请添加LED芯片';
+                    return;
+                }
+
+                if (ledChips.length === 1) {
+                    const chip = ledChips[0];
+                    const colorName = getColorName(chip.wavelength);
+                    symbolNameInput.placeholder = `LED_${colorName}_${chip.wavelength}nm`;
+                } else {
+                    const colorNames = ledChips.map(c => getColorName(c.wavelength)[0]).join('');
+                    const commonType = document.querySelector('input[name="commonTerminal"]:checked').value;
+                    const suffix = commonType === 'commonCathode' ? '_CC' : commonType === 'commonAnode' ? '_CA' : '';
+                    symbolNameInput.placeholder = `LED_${colorNames}${suffix}`;
+                }
+            }
+
+            function updatePreview() {
+                if (ledChips.length === 0) {
+                    previewSvg.innerHTML = '<text x="0" y="0" text-anchor="middle" fill="#6b7280" font-size="12">添加LED芯片后显示预览</text>';
+                    return;
+                }
+
+                let svg = '';
+                const spacing = 110;
+                const startY = -(ledChips.length - 1) * spacing / 2;
+
+                ledChips.forEach((chip, index) => {
+                    const y = startY + index * spacing;
+                    const color = chip.color;
+
+                    // Triangle pointing right
+                    svg += `<polygon points="-30,${y-28} -30,${y+28} 30,${y}" fill="${color}" stroke="${color}" stroke-width="1"/>`;
+
+                    // Light arrows above triangle, from lower-left to upper-right
+                    svg += `<line x1="-10" y1="${y-52}" x2="14" y2="${y-76}" stroke="${color}" stroke-width="1"/>`;
+                    svg += `<line x1="8" y1="${y-46}" x2="32" y2="${y-70}" stroke="${color}" stroke-width="1"/>`;
+
+                    // A pin on the left
+                    svg += `<line x1="-90" y1="${y}" x2="-30" y2="${y}" stroke="#333" stroke-width="1"/>`;
+                    svg += `<text x="-120" y="${y+4}" font-size="10" fill="#333">A:${chip.anodePinNumber || '?'}</text>`;
+
+                    // K pin on the right
+                    svg += `<line x1="30" y1="${y}" x2="90" y2="${y}" stroke="#333" stroke-width="1"/>`;
+                    svg += `<text x="96" y="${y+4}" font-size="10" fill="#333">K:${chip.cathodePinNumber || '?'}</text>`;
+                });
+
+                // Common terminal indicator
+                const commonType = document.querySelector('input[name="commonTerminal"]:checked').value;
+                if (commonType !== 'none' && ledChips.length > 1) {
+                    const commonPinNum = commonType === 'commonCathode'
+                        ? document.getElementById('commonCathodePinNum').value
+                        : document.getElementById('commonAnodePinNum').value;
+
+                    if (commonPinNum) {
+                        const x = commonType === 'commonCathode' ? 120 : -120;
+                        svg += `<text x="${x}" y="0" text-anchor="middle" font-size="10" fill="#333">公共端: ${commonPinNum}</text>`;
+                    }
+                }
+
+                previewSvg.innerHTML = svg;
+            }
+
+            // Common terminal radio buttons
+            document.querySelectorAll('input[name="commonTerminal"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    document.getElementById('commonCathodePin').classList.toggle('is-hidden', radio.value !== 'commonCathode');
+                    document.getElementById('commonAnodePin').classList.toggle('is-hidden', radio.value !== 'commonAnode');
+                    updatePreview();
+                    updateSymbolName();
+                });
+            });
+
+            document.getElementById('commonCathodePinNum').addEventListener('input', updatePreview);
+            document.getElementById('commonAnodePinNum').addEventListener('input', updatePreview);
+
+            // Add chip button
+            btnAddChip.addEventListener('click', () => {
+                const defaultWavelength = ledChips.length === 0 ? 630 : ledChips.length === 1 ? 525 : 470;
+                const pinBase = ledChips.length * 2 + 1;
+                addChipRow(defaultWavelength, String(pinBase), String(pinBase + 1));
+            });
+
+            // Cancel button
+            btnCancel.addEventListener('click', closeDialog);
+
+            // Create button
+            btnCreate.addEventListener('click', () => {
+                showError('');
+
+                if (ledChips.length === 0) {
+                    showError('请至少添加一个LED芯片');
+                    return;
+                }
+
+                // Validate pin numbers
+                const pins = ledChips.flatMap(c => [c.anodePinNumber, c.cathodePinNumber]).filter(p => p);
+                const uniquePins = new Set(pins);
+                if (pins.length !== uniquePins.size) {
+                    showError('引脚标号不能重复');
+                    return;
+                }
+
+                const commonType = document.querySelector('input[name="commonTerminal"]:checked').value;
+                let commonPin = null;
+                if (commonType === 'commonCathode') {
+                    commonPin = document.getElementById('commonCathodePinNum').value.trim();
+                    if (!commonPin) {
+                        showError('请输入公共阴极引脚号');
+                        return;
+                    }
+                } else if (commonType === 'commonAnode') {
+                    commonPin = document.getElementById('commonAnodePinNum').value.trim();
+                    if (!commonPin) {
+                        showError('请输入公共阳极引脚号');
+                        return;
+                    }
+                }
+
+                if (commonPin && uniquePins.has(commonPin)) {
+                    showError('公共端引脚号不能与 LED 引脚重复');
+                    return;
+                }
+
+                const name = symbolNameInput.value.trim() || symbolNameInput.placeholder;
+                const chips = ledChips.map(c => ({
+                    wavelength: c.wavelength,
+                    anodePinNumber: c.anodePinNumber,
+                    cathodePinNumber: c.cathodePinNumber,
+                    color: c.color,
+                }));
+
+                const payload = {
+                    symbolName: name,
+                    ledChips: chips,
+                    commonTerminalType: commonType,
+                    commonTerminalPin: commonPin,
+                    timestamp: Date.now(),
+                };
+
+                logInfo(`create LED symbol | name=${name} | chips=${chips.length}`);
+
+                try {
+                    pushPublic(TOPIC_CREATE_SYMBOL, payload);
+                    logInfo('TOPIC_CREATE_SYMBOL sent');
+                } catch (err) {
+                    showError(`无法发送请求：${String(err)}`);
+                }
+            });
+
+            // Initialize
+            updateActiveLibraryLabel();
+
+            // Add first chip by default
+            addChipRow(630, '1', '2');
+
+            bootstrapLog('iframe init complete');
+            } catch (error) {
+                bootstrapLog(`iframe init error | ${String(error)}`, 3);
+                document.body.innerHTML += `<div style="color:red;padding:12px;font-size:12px">初始化错误：${String(error)}</div>`;
+            }
+        </script>
+    </body>
+</html>

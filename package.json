@@ -1,0 +1,45 @@
+{
+	"name": "led-symbol-generator",
+	"version": "0.1.0",
+	"description": "LED符号库生成插件 - 根据LED主波长创建对应颜色的LED原理图符号",
+	"author": "no010",
+	"license": "Apache-2.0",
+	"homepage": "https://github.com/no010/LED-Symbol-Generator",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/no010/LED-Symbol-Generator"
+	},
+	"bugs": {
+		"url": "https://github.com/no010/LED-Symbol-Generator/issues"
+	},
+	"engines": {
+		"node": ">=20.17.0"
+	},
+	"scripts": {
+		"compile": "rimraf ./dist/ && ts-node ./config/esbuild.prod.ts",
+		"lint": "eslint",
+		"fix": "eslint --fix",
+		"build": "npm run compile && ts-node ./build/packaged.ts"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^5.4.1",
+		"@jlceda/pro-api-types": "^0.1.175",
+		"@types/fs-extra": "^11.0.4",
+		"esbuild": "^0.24.2",
+		"eslint": "^9.37.0",
+		"fs-extra": "^11.3.0",
+		"ignore": "^7.0.3",
+		"jszip": "^3.10.1",
+		"lint-staged": "^16.2.3",
+		"rimraf": "^6.0.1",
+		"simple-git-hooks": "^2.13.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.7.3"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "npx lint-staged"
+	},
+	"lint-staged": {
+		"*": "eslint --fix"
+	}
+}
