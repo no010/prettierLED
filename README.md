@@ -27,7 +27,7 @@ git clone https://github.com/no010/prettierLED.git
 cd prettierLED
 npm install
 npm run build
-# 打包产物位于 build/dist/led-symbol-generator_v0.1.0.eext
+# 打包产物位于 build/dist/led-symbol-generator_v0.1.1.eext
 ```
 
 ## 使用说明

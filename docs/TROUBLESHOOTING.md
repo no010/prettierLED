@@ -5,7 +5,7 @@ This document lists common problems, their causes, and steps to debug or fix the
 1) IFrame shows `undefined` or blank
 - Cause: packager may not have included `iframe/led-symbol.html` in the `.eext`, or `openIFrame()` was called with a URL that includes a query string (packager treats paths literally).
 - Check:
-  - Open the package `build/dist/led-symbol-generator_v0.1.0.eext` (it's a ZIP archive) and verify `iframe/led-symbol.html` exists.
+  - Open the package `build/dist/led-symbol-generator_v0.1.1.eext` (it's a ZIP archive) and verify `iframe/led-symbol.html` exists.
   - Ensure host calls `eda.sys_IFrame.openIFrame('/iframe/led-symbol.html', ...)` without appended query strings.
 - Fix: Rebuild (`npm run build`) and reinstall the `.eext`.
 

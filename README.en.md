@@ -27,7 +27,7 @@ git clone https://github.com/no010/prettierLED.git
 cd prettierLED
 npm install
 npm run build
-# Packaged artifact located at build/dist/led-symbol-generator_v0.1.0.eext
+# Packaged artifact located at build/dist/led-symbol-generator_v0.1.1.eext
 ```
 
 ## Usage

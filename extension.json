@@ -3,7 +3,7 @@
 	"uuid": "a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7",
 	"displayName": "LED符号生成器",
 	"description": "根据LED主波长自动生成对应颜色的LED原理图符号，支持多芯片LED封装",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"publisher": "",
 	"engines": {
 		"eda": "^3.0.0"
@@ -11,7 +11,7 @@
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/no010/LED-Symbol-Generator"
+		"url": "https://github.com/no010/prettierLED"
 	},
 	"categories": "Schematic Design",
 	"keywords": [
@@ -28,8 +28,8 @@
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "https://github.com/no010/LED-Symbol-Generator",
-	"bugs": "https://github.com/no010/LED-Symbol-Generator/issues",
+	"homepage": "https://github.com/no010/prettierLED",
+	"bugs": "https://github.com/no010/prettierLED/issues",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},

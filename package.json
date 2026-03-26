@@ -1,16 +1,16 @@
 {
 	"name": "led-symbol-generator",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "LED符号库生成插件 - 根据LED主波长创建对应颜色的LED原理图符号",
 	"author": "no010",
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/no010/LED-Symbol-Generator",
+	"homepage": "https://github.com/no010/prettierLED",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/no010/LED-Symbol-Generator"
+		"url": "https://github.com/no010/prettierLED"
 	},
 	"bugs": {
-		"url": "https://github.com/no010/LED-Symbol-Generator/issues"
+		"url": "https://github.com/no010/prettierLED/issues"
 	},
 	"engines": {
 		"node": ">=20.17.0"

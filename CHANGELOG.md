@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+### Changed
+
+- Bumped package and extension metadata version for the next release.
+
 ## 0.1.0
 
 ### Added

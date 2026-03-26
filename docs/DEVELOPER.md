@@ -82,10 +82,10 @@ Packaging verification (PowerShell example)
 
 ```powershell
 # After build
-Get-Item build\dist\led-symbol-generator_v0.1.0.eext | Select-Object Name, LastWriteTime
+Get-Item build\dist\led-symbol-generator_v0.1.1.eext | Select-Object Name, LastWriteTime
 # To inspect archive contents
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::OpenRead('build\dist\led-symbol-generator_v0.1.0.eext').Entries | Select-Object FullName
+[System.IO.Compression.ZipFile]::OpenRead('build\dist\led-symbol-generator_v0.1.1.eext').Entries | Select-Object FullName
 ```
 
 Conventions and geometry
